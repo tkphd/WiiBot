@@ -1,4 +1,4 @@
 WiiBot
 ======
 
-Arduino code for Nunchuk-controlled Ardubot
+Source code for Arduino machines with Wii remote controls
