@@ -1,0 +1,7 @@
+Test code for Wii Nunchuk integration with Ardubot.
+
+Code initialized from http://home.online.no/~togalaas/ardubot/
+
+Tested with Arduino Uno R3, SparkFun Ardubot, and Nyko Kama controller.
+
+Modified from the original to reverse the sense of leftForw(byte speed) and leftBackw(byte speed).
