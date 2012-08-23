@@ -46,7 +46,7 @@ int change = 0;
 byte outbuf[WII_TELEGRAM_LEN]; // array to store arduino output
 int cnt = 0;
 
-void setup ()
+void setup()
 {
 
   Wire.begin(); // initialize i2c
@@ -63,21 +63,21 @@ void setup ()
 // params:
 // timeout: abort when timeout (in ms) expires, 0 for unlimited timeout
 // return: 0 == ok, 1 == timeout
-byte nunchuck_init (unsigned short timeout)
+byte nunchuck_init(unsigned short timeout)
 {
   byte rc = 1;
   unsigned long time = millis();
   do
   {
-    Wire.beginTransmission (WII_NUNCHUCK_TWI_ADR); // transmit to device 0x52
-    Wire.send (0xF0); // sends memory address
-    Wire.send (0x55); // sends data.
+    Wire.beginTransmission(WII_NUNCHUCK_TWI_ADR); // transmit to device 0x52
+    Wire.write((byte)0xF0); // sends memory address
+    Wire.write((byte)0x55); // sends data.
     if(Wire.endTransmission() == 0) // stop transmitting
     {
-      Wire.beginTransmission (WII_NUNCHUCK_TWI_ADR); // transmit to device 0x52
-      Wire.send (0xFB); // sends memory address
-      Wire.send (0x00); // sends sent a zero.
-      if(Wire.endTransmission () == 0) // stop transmitting
+      Wire.beginTransmission(WII_NUNCHUCK_TWI_ADR); // transmit to device 0x52
+      Wire.write((byte)0xFB); // sends memory address
+      Wire.write((byte)0x00); // sends sent a zero.
+      if(Wire.endTransmission() == 0) // stop transmitting
       {
         rc = 0;
       }
@@ -92,8 +92,8 @@ byte nunchuck_init (unsigned short timeout)
 void clearTwiInputBuffer(void)
 {
   // clear the receive buffer from any partial data
-  while( Wire.available ())
-    Wire.receive ();
+  while( Wire.available())
+    Wire.read();
 }
 
 
@@ -104,20 +104,20 @@ void send_zero ()
   for(byte i = 0; i < 3; i++)
   {
     Wire.beginTransmission (WII_NUNCHUCK_TWI_ADR); // transmit to device 0x52
-    Wire.send (0x00); // sends one byte
-    Wire.endTransmission (); // stop transmitting
+    Wire.write((byte)0x00); // sends one byte
+    Wire.endTransmission(); // stop transmitting
     //delay(1);
   }
 }
 
 void loop (){
-  delay (100);
-  send_zero (); // send the request for next bytes
-  Wire.requestFrom (WII_NUNCHUCK_TWI_ADR, WII_TELEGRAM_LEN); // request data from nunchuck
+  delay(100);
+  send_zero(); // send the request for next bytes
+  Wire.requestFrom(WII_NUNCHUCK_TWI_ADR, WII_TELEGRAM_LEN); // request data from nunchuck
 
-  for (cnt = 0; (cnt < WII_TELEGRAM_LEN) && Wire.available (); cnt++)
+  for (cnt = 0; (cnt < WII_TELEGRAM_LEN) && Wire.available(); cnt++)
   {
-    outbuf[cnt] = Wire.receive (); // receive byte as an integer
+    outbuf[cnt] = Wire.read (); // receive byte as an integer
   }
 
   // debugging
