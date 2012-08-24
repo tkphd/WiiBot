@@ -33,11 +33,11 @@ const byte left2 = 3; // Left motor control 2
 
 //const byte joy_x_mid = 133;    // Sample value
 //const byte joy_y_mid = 130;    // Sample value
-const byte joy_x_mid = 150;
-const byte joy_y_mid = 140;
+const byte joy_x_mid = 129;
+const byte joy_y_mid = 133;
 
-const int acc_x_mid = 512;
-const int acc_y_mid = 512;
+const int acc_x_mid = 538;
+const int acc_y_mid = 540;
 
 int button_state = 1; // variable for reading the Z-button status
 int led_state = 0;    // variable containing LED status
@@ -167,6 +167,10 @@ void loop (){
       }
       if (loop_counter == 20){
         loop_counter = 0;
+        Serial.print(joy_x);
+        Serial.print(",");
+        Serial.print(joy_y);
+        Serial.print("\t->\t");
         Serial.print(xval);
         Serial.print(",");
         Serial.print(yval);
@@ -203,6 +207,10 @@ void loop (){
     }
     if (loop_counter == 20){
       loop_counter = 0;
+      Serial.print(accel_x_axis);
+      Serial.print(",");
+      Serial.print(accel_y_axis);
+      Serial.print("\t->\t");
       Serial.print(xval);
       Serial.print(",");
       Serial.print(yval);
