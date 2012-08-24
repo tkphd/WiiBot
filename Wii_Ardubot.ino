@@ -1,7 +1,7 @@
 /*
  (Copy and paste)
  Sparkfun Ardubot + Nunchuck adapter + wireless Nunchuck controller from Logic3
-
+ 
  Adapted from :
  http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1259091426
  
@@ -17,9 +17,9 @@
  // read out a Wii Nunchuck controller
  // adapted to work with wireless Nunchuck controllers of third party vendors by Michael Dreher <michael@5dot1.de>
  // use "The New Way" of initialization
-<http://wiibrew.org/wiki/Wiimote#The_New_Way>
+ <http://wiibrew.org/wiki/Wiimote#The_New_Way>
  
-*/
+ */
 
 const byte WII_IDENT_LEN = 6;
 const byte WII_TELEGRAM_LEN = 6;
@@ -31,8 +31,10 @@ const byte right2 = 6; // Right motor control 2
 const byte left1 = 5; // Left motor control 1
 const byte left2 = 3; // Left motor control 2
 
-const byte joy_x_mid = 133;    // Sample value
-const byte joy_y_mid = 130;    // Sample value
+//const byte joy_x_mid = 133;    // Sample value
+//const byte joy_y_mid = 130;    // Sample value
+const byte joy_x_mid = 150;
+const byte joy_y_mid = 140;
 
 const int acc_x_mid = 512;
 const int acc_y_mid = 512;
@@ -40,6 +42,7 @@ const int acc_y_mid = 512;
 int button_state = 1; // variable for reading the Z-button status
 int led_state = 0;    // variable containing LED status
 int change = 0;
+int loop_counter = 0;
 
 #include <Wire.h>
 
@@ -56,6 +59,7 @@ void setup()
   pinMode(left1, OUTPUT);
   pinMode(left2, OUTPUT);
   pinMode(13, OUTPUT);
+  Serial.begin(9600);
 
   nunchuck_init(0); // send the initialization handshake
 }
@@ -117,7 +121,7 @@ void loop (){
 
   for (cnt = 0; (cnt < WII_TELEGRAM_LEN) && Wire.available(); cnt++)
   {
-    outbuf[cnt] = Wire.read (); // receive byte as an integer
+    outbuf[cnt] = Wire.read(); // receive byte as an integer
   }
 
   // debugging
@@ -152,7 +156,7 @@ void loop (){
 
       int xval = joy_x - joy_x_mid;
       int yval = joy_y - joy_y_mid;
-
+      
       if(yval >= 0){
         leftForw(constrain(yval + xval, 0, 255));
         rightForw(constrain(yval - xval, 0, 255));
@@ -160,6 +164,13 @@ void loop (){
       if(yval < 0){
         leftBackw(constrain(-yval + xval, 0, 255));
         rightBackw(constrain(-yval - xval, 0, 255));
+      }
+      if (loop_counter == 20){
+        loop_counter = 0;
+        Serial.print(xval);
+        Serial.print(",");
+        Serial.print(yval);
+        Serial.println("");
       }
     }
   }
@@ -190,7 +201,15 @@ void loop (){
       leftBackw(constrain(-yval + xval, 0, 255));
       rightBackw(constrain(-yval - xval, 0, 255));
     }
+    if (loop_counter == 20){
+      loop_counter = 0;
+      Serial.print(xval);
+      Serial.print(",");
+      Serial.print(yval);
+      Serial.println("");      
+    }
   }
+  loop_counter++;
 }
 
 void rightForw(byte speed){              // Motor code blocks
@@ -210,3 +229,4 @@ void leftBackw(byte speed){
   digitalWrite(left1, speed);
   analogWrite(left2, LOW);
 }
+
